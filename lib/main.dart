@@ -22,20 +22,37 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  @override
+
+  var realController = TextEditingController();
+  var dolarController = TextEditingController();
+  var dolar = 0.0;
+
+  void _realChanged(text){
+    double real = double.parse(text);
+    dolarController.text = (real/dolar).toStringAsFixed(2);
+  }
+
+  void _dolarChanged(text){
+    double dolar = double.parse(text);
+    realController.text = (dolar*this.dolar).toStringAsFixed(2);
+  }
+
+  void _clarAll(){
+    realController.text = "";
+    dolarController.text = "";
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
         title: Text("Conversor"),
-        backgroundColor: Colors.purple,
+        backgroundColor: Colors.amber,
         centerTitle: true,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: (){
-              print("Refresh");
-            },
+            onPressed: _clarAll,
           )
         ],
       ),
@@ -56,7 +73,7 @@ class _HomeState extends State<Home> {
               );
             }
             else{
-              print(snapshot.data['results']['currencies']['USD']['buy']);
+              dolar = snapshot.data['results']['currencies']['USD']['buy'];
               return SingleChildScrollView(
                 padding: EdgeInsets.all(10.0),
                 child: Column(
@@ -65,7 +82,42 @@ class _HomeState extends State<Home> {
                     Icon(
                       Icons.monetization_on,
                       size: 150,
-                      color: Colors.purple,
+                      color: Colors.amber,
+                    ),
+                    TextField(
+                      controller: realController,
+                      onChanged: _realChanged,
+                      decoration: InputDecoration(
+                        labelText: "Real",
+                        labelStyle: TextStyle(color: Colors.amber),
+                        border: OutlineInputBorder(),
+                        prefixText: "R\$"
+                      ),
+                      style: TextStyle(
+                        color: Colors.amber,
+                        fontSize: 25.0
+                      ),
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true, signed: false
+                      ),
+                    ),
+                    Divider(),
+                    TextField(
+                      controller: dolarController,
+                      onChanged: _dolarChanged,
+                      decoration: InputDecoration(
+                        labelText: "Dolar",
+                        labelStyle: TextStyle(color: Colors.amber),
+                        border: OutlineInputBorder(),
+                        prefixText: "US\$"
+                      ),
+                      style: TextStyle(
+                        color: Colors.amber,
+                        fontSize: 25.0
+                      ),
+                      keyboardType: TextInputType.numberWithOptions(
+                        decimal: true, signed: false
+                      ),
                     )
                   ],
                 ),
@@ -77,3 +129,4 @@ class _HomeState extends State<Home> {
     );
   }
 }
+
